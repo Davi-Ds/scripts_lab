@@ -1,97 +1,95 @@
-#criar um script em pythohn para locação de carros
+# -*- coding: utf-8 -*-
+
 print("===================")
-print("\nBem vindo à locadora de carros do Bender!")
+print("\nBem-vindo à locadora de carros do Bender!")
 print("\n===================")
 
-
 # Dicionário de carros
-
 carros = {
-    "Toyota Corolla": {
-        "ano": 2022,
-        "cor": "Prata",
-        "motor": "2.0",
-        "preço": 120000
-    },
-    "Honda Civic": {
-        "ano": 2021,
-        "cor": "Preto",
-        "motor": "1.5 Turbo",
-        "preço": 130000
-    },
-    "Chevrolet Onix": {
-        "ano": 2023,
-        "cor": "Branco",
-        "motor": "1.0 Turbo",
-        "preço": 85000
-    }
+    "Toyota Corolla": {"ano": 2022, "cor": "Prata", "motor": "2.0", "preço": 120000},
+    "Honda Civic": {"ano": 2021, "cor": "Preto", "motor": "1.5 Turbo", "preço": 130000},
+    "Chevrolet Onix": {"ano": 2023, "cor": "Branco", "motor": "1.0 Turbo", "preço": 85000},
 }
-alugados = []
+
+# Listas de controle
 disponiveis = list(carros.keys())
+alugados = []
 
-while True:
-    print("\nO que deseja fazer?")
-    print ("\n0 - Mostrar portifólio de carros | 1 - Alugar carros | 2 - Devolver carros")
-    print("")
+def mostrar_portfolio():
+    print("\n=== Portfólio de Carros ===")
+    for i, modelo in enumerate(carros.keys(), start=1):
+        print(f"{i} - {modelo}")
+        print("\n===========================")
 
-    escolha = int(input("\nDigite sua opção: "))
-    
-    
-    # Mostrar portfólio
-    if escolha == 0:
-        print("\n=== Portfólio de Carros ===")
-        i = 1
-        for modelo in carros:
-                print(f"{i}- {modelo}")
-                i += 1
-        continue
+def listar_disponiveis():
+    if not disponiveis:
+        print("\nNenhum carro disponível para aluguel no momento.")
+        return False
+    print("\n=== Carros Disponíveis ===")
+    for i, modelo in enumerate(disponiveis, start=1):
+        print(f"{i} - {modelo}")
+        print("\n===========================")
+    return True
 
+def detalhar(modelo):
+    print(f"\nVocê selecionou: {modelo}")
+    print("Detalhes:")
+    for k, v in carros[modelo].items():
+        print(f"  {k}: {v}")
+        print("\n===========================")
 
-    if escolha == 1:
-          if not disponiveis:
-            print("\nNenhum carro disponível para aluguel no momento.")
-            continue
-          
-          print("\n=== Carros Disponíveis ===")
-          for i, modelo in enumerate(disponiveis, start=1):
-            print(f"{i} - {modelo}")
-
-
-    # Solicitar escolha do usuário
-    escolha = int(input("\nSelecione o número do modelo: "))
-
-    # Validar e exibir detalhes do carro escolhido
-    if 1 <= escolha <= len(disponiveis):
-        modelo = disponiveis[escolha - 1]  # pega o carro pelo índice
-        alugados.append(modelo)  # adiciona à lista de alugados
-        print(f"\nVocê escolheu: {modelo}")
-        print("Detalhes:")
-        for chave, valor in carros[modelo].items():
-            print(f"  {chave}: {valor}")
+def alugar_carro():
+    if not listar_disponiveis():
+        return
     else:
-        print("Opção inválida. Tente novamente.")
-    
-
-
-    #Devolver carros alugados pelo usuario
-    if escolha == 2:
-        if not alugados:
-            print("\nVocê não possui carros para devolver.")
-            continue
-
-        print("\n=== Seus carros alugados ===")
-        for i, modelo in enumerate(alugados, start=1):
-            print(f"{i}. {modelo}")
-
-        escolha_devolver = int(input("\nSelecione o número do carro para devolver: "))
-
-        if 1 <= escolha_devolver <= len(alugados):
-            modelo = alugados.pop(escolha_devolver - 1)  # remove da lista de alugados
-            print(f"\nVocê devolveu o carro: {modelo}")
+        escolha = int(input("\nSelecione o número do modelo para ALUGAR: "))
+        if 1 <= escolha <= len(disponiveis):
+            modelo = disponiveis.pop(escolha - 1)
+            detalhar(modelo)
+            alugados.append(modelo)
+            print(f"\n {modelo} foi alugado com sucesso!")
+            print("\n===========================")
         else:
             print("Opção inválida.")
 
-        continuar = input("\nDeseja realizar outra operação? (S/N): ").strip().upper()
-        if continuar != "S":
-            print("\nA locadora de carros do Bender agradece sua preferência!")
-            break
+def devolver_carro():
+    if not alugados:
+        print("\n(Nenhum carro alugado no momento.)")
+        return
+    print("\n=== Seus carros alugados ===")
+    for i, modelo in enumerate(alugados, start=1):
+        print(f"{i} - {modelo}")
+        print("\n===========================")
+    else:
+        escolha = int(input("\nSelecione o número do carro para DEVOLVER: "))
+        if 1 <= escolha <= len(alugados):
+            modelo = alugados.pop(escolha - 1)
+            disponiveis.append(modelo)
+            print(f"\n Você devolveu o carro: {modelo}")
+            print("\n===========================")
+        else:
+            print("Opção inválida.")
+
+
+# Loop principal
+while True:
+    print("\nO que deseja fazer?")
+    print("0 - Mostrar portfólio de carros")
+    print("1 - Alugar carros")
+    print("2 - Devolver carros")
+    print("3 - Sair")
+          
+
+    escolha = int(input("\nDigite sua opção: "))
+
+    if escolha == 0:
+        mostrar_portfolio()
+    elif escolha == 1:
+        alugar_carro()
+    elif escolha == 2:
+        devolver_carro()
+    elif escolha == 3:
+        print("\nA locadora de carros do Bender agradece sua preferência!")
+        break
+    else:
+        print("Opção inválida.")
